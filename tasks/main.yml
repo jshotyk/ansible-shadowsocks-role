@@ -3,11 +3,25 @@
   dnf:
       name: epel-release
       state: present
-
-- name: Install dependencies
-  dnf:
-        name: [wget, tar, git]
+- block: ##====Block for REDHAT====
+   - name: Install dependencies for RedHat
+     ansible.builttin.dnf:
+        name: 
+          - wget 
+          - tar 
+          - git
         state: present
+     when: ansible_os_family == "RedHat"
+
+- block: ##====Block for Debian====
+   - name: Install dependencies for Debian
+     ansible.builttin.apt:
+        name: 
+          - wget 
+          - tar 
+          - git
+        state: present
+     when: ansible_os_family == "Debian"
 
 - name: Download shadowsocks-rust archive
   get_url:
@@ -36,14 +50,7 @@
          extra_opts: [--transform=s|.*|v2ray-plugin|]
          creates: /bin/v2ray-plugin
 
-- name: Open port
-  firewalld:
-       port: "{{ port_enable }}"
-       proto: "{{ proto_enable }}"
-       permanent: yes
-       state: enabled
-       immediate: yes
-
+   
 - name: Create Shadowsocks-Rust config directory
   file:
        path: /etc/shadowsocks
@@ -51,16 +58,18 @@
 
 - name: Generate ssserver.service
   template: 
-      src: ssserver.j2
-      dest: {{ destin_folder }}/ssserver.service mode=0555
+    src: ssserver.j2 
+    dest: etc/systemd/system/ssserver.service 
+    mode: 0555
   notify:
      - Reload systemd
      
 
 - name: Generate config.json
   template: 
-       src: config.j2 
-       dest: {{ destin_folder_shadowsocks }}/config.json mode=0555
+   src: config.j2 
+   dest: /etc/shadowsocks/config.json 
+   mode: 0555
   notify:
     - Start ssserver
-    
+    - Open port
