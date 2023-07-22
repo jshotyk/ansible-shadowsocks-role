@@ -37,8 +37,8 @@
    
 - name: Create Shadowsocks-Rust config directory
   file:
-       path: /etc/shadowsocks
-       state: directory
+    path: /etc/shadowsocks
+    state: directory
 
 - name: Generate ssserver.service
   template: 
@@ -69,7 +69,7 @@
 - name: Enable UFW
   shell: ufw --force enable
   when: ansible_os_family == "Debian"
-  
+
 - name: Open port Debian
   ufw:
     rule: allow
