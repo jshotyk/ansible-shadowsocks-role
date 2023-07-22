@@ -6,32 +6,18 @@
     
 - name: Start ssserver
   systemd:
-     name: ssserver
-     state: started
-     enabled: yes
+    name: ssserver
+    state: started
+    enabled: yes
 
-- name: Reloaded ssserver
+- name: Reload ssserver
   systemd:
-     name: ssserver
-     state: reloaded
-     enabled: yes
-
-- name: Open port RedHat
-  firewalld:
-    port: "{{ port_enable }}"
-    proto: "{{ proto_enable }}"
-    permanent: yes
-    state: enabled
-    immediate: yes
-
-- name: Enable UFW
-  shell: ufw --force enable
+    name: ssserver
+    state: reloaded
+    enabled: yes
 
 - name: Reload UFW
   shell: ufw reload
 
-- name: Open port Debian
-  ufw:
-    rule: allow
-    port: "{{ port_enable }}"
+
 
