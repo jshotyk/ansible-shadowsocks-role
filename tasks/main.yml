@@ -1,38 +1,38 @@
 ---
 - name: Install dependencies
   ansible.builttin.package:
-        name: 
-          - wget 
-          - tar 
-          - git
-        state: present
+    name: 
+      - wget 
+      - tar 
+      - git
+    state: present
 
 - name: Download shadowsocks-rust archive
   get_url:
-        url: "{{ shadowsocks_rust}}"
-        dest: "/tmp/shadowsocks.tar.xz"
-        mode: 0644
+    url: "{{ shadowsocks_rust}}"
+    dest: "/tmp/shadowsocks.tar.xz"
+    mode: 0644
            
 - name: Extract shadowsocks-rust archive
   unarchive:
-        src: "/tmp/shadowsocks.tar.xz"
-        dest: "/bin"
-        remote_src: yes
-        creates: /bin/ssserver
+    src: "/tmp/shadowsocks.tar.xz"
+    dest: "/bin"
+    remote_src: yes
+    creates: /bin/ssserver
 
 - name: Download V2Ray plugin
   get_url:
-        url: "{{ V2Ray_plugin }}"
-        dest: "/tmp/v2ray.tar.gz"
-        mode: 0644
+    url: "{{ V2Ray_plugin }}"
+    dest: "/tmp/v2ray.tar.gz"
+    mode: 0644
             
 - name: Extract V2Ray archive
   unarchive:
-         src: "/tmp/v2ray.tar.gz"
-         dest: "/bin"
-         remote_src: yes
-         extra_opts: [--transform=s|.*|v2ray-plugin|]
-         creates: /bin/v2ray-plugin
+    src: "/tmp/v2ray.tar.gz"
+    dest: "/bin"
+    remote_src: yes
+    extra_opts: [--transform=s|.*|v2ray-plugin|]
+    creates: /bin/v2ray-plugin
 
    
 - name: Create Shadowsocks-Rust config directory
@@ -48,6 +48,14 @@
   notify:
      - Reload systemd
      
+- name: Open port RedHat
+  firewalld:
+    port: "{{ port_enable }}"
+    proto: "{{ proto_enable }}"
+    permanent: yes
+    state: enabled
+    immediate: yes
+  when: ansible_os_family == "RedHat"
 
 - name: Generate config.json RedHat
   template: 
@@ -56,8 +64,19 @@
    mode: 0555
   notify:
     - Start ssserver
-    - Open port RedHat
   when: ansible_os_family == "RedHat"
+
+- name: Enable UFW
+  shell: ufw --force enable
+  when: ansible_os_family == "Debian"
+  
+- name: Open port Debian
+  ufw:
+    rule: allow
+    port: "{{ port_enable }}"
+    notify:
+    - Reload UFW
+  when: ansible_os_family == "Debian"
 
 - name: Generate config.json Debian
   template: 
@@ -65,10 +84,7 @@
    dest: /etc/shadowsocks/config.json 
    mode: 0555
   notify:
-    - Enable UFW
-    - Open port Debian
-    - Reload UFW
-    - Start ssserver   
+     - Start ssserver   
   when: ansible_os_family == "Debian"
 
   
