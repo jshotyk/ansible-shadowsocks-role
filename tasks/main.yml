@@ -50,13 +50,17 @@
        state: directory
 
 - name: Generate ssserver.service
-  template: src=ssserver.j2 dest={{ destin_folder }}/ssserver.service mode=0555
+  template: 
+      src: ssserver.j2
+      dest: {{ destin_folder }}/ssserver.service mode=0555
   notify:
      - Reload systemd
      
 
 - name: Generate config.json
-  template: src=config.j2 dest={{ destin_folder_shadowsocks }}/config.json mode=0555
+  template: 
+       src: config.j2 
+       dest: {{ destin_folder_shadowsocks }}/config.json mode=0555
   notify:
     - Start ssserver
     
