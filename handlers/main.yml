@@ -1,3 +1,4 @@
+# handlers file for deploy_shadowsoks_rust
 ---
 - name: Reload systemd
   systemd:
@@ -15,11 +16,22 @@
      state: reloaded
      enabled: yes
 
-- name: Open port
+- name: Open port RedHat
   firewalld:
     port: "{{ port_enable }}"
     proto: "{{ proto_enable }}"
     permanent: yes
     state: enabled
     immediate: yes
-# handlers file for deploy_shadowsoks_rust
+
+- name: Enable UFW
+  shell: ufw --force enable
+
+- name: Reload UFW
+  shell: ufw reload
+
+- name: Open port Debian
+  ufw:
+    rule: allow
+    port: "{{ port_enable }}"
+
