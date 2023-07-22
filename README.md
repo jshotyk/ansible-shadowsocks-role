@@ -1,39 +1,39 @@
-Role Name
-=========
+# Развертывание Shadowsocks Rust
 
-A brief description of the role goes here.
+Данный Ansible playbook предназначен для развертывания Shadowsocks Rust на целевых Linux-хостах.
 
-Requirements
-------------
+## Требования
+- Ansible
+- Linux-хосты
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+## Использование
+1. Обновите переменную `MYHOSTS` при запуске в командной строке или в файле инвентаря (inventory.ini) с целевыми хостами, на которых вы хотите развернуть Shadowsocks Rust.
 
-Role Variables
---------------
+2. Запустите playbook:
+   ```
+   ansible-playbook deploy_shadowsoks_rust.yml --extra-var "MYHOSTS="Наименование вашей группы"" --vault-password-file=password.txt
+  
+   ```
+#### Hеобходимо поместить пароль vault в файл password.txt
+3. Playbook установит необходимые зависимости, загрузит архив Shadowsocks Rust, извлечет его, загрузит плагин V2Ray, создаст директорию конфигурации, сгенерирует файл `ssserver.service` и файл `config.json`, а затем запустит сервер Shadowsocks Rust.
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+## Настройка
+##### Вы можете настроить развертывание, изменив следующие переменные в playbook в каталоге `roles/defaults/main.yml`:
 
-Dependencies
-------------
+- `destin_folder`: Каталог, в котором будет создан файл `ssserver.service`.
+- `destin_folder_shadowsocks`: Каталог, в котором будет создан файл `config.json`.
+- `shadowsocks_rust`: URL архива Shadowsocks Rust.
+- `V2Ray_plugin`: URL плагина V2Ray.
+- `port_enable`: Переменная открывающая порт использует шаблон `config.j2` и playbook `roles/tasks/main.yml` - name: Open port.
+- `port_disable`: Переменная закрывающая порт использует шаблон `config.j2` и playbook `roles/tasks/main.yml` - name: Open port.
+- `proto_enable`: Переменная включает протокол использует шаблон `config.j2` и playbook `roles/tasks/main.yml` - name: Open port.
+- `proto_disable`: Переменная отключает протокол использует шаблон `config.j2` и playbook `roles/tasks/main.yml` - name: Open port.
+##### Так же необходимо настроить переменную в playbook в каталоге `roles/vars/main.yml`:
+- `password_shadowsoks` использует шаблон `config.j2`, предварительно зашифрован vault.
+## Ограничения
+- Этот playbook предполагает, что целевые хосты работают под управлением операционной системы Linux.
+- Убедитесь, что необходимые порты и сетевые настройки правильно настроены для работы Shadowsocks Rust.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Обратите внимание, что playbook может потребовать дополнительной настройки в соответствии с вашим конкретным окружением и требованиями.
 
-Example Playbook
-----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
-# deploy_shadowsoks_rust
