@@ -1,27 +1,11 @@
 ---
-- name: Install epel-release repository
-  dnf:
-      name: epel-release
-      state: present
-- block: ##====Block for REDHAT====
-   - name: Install dependencies for RedHat
-     ansible.builttin.dnf:
+- name: Install dependencies
+  ansible.builttin.package:
         name: 
           - wget 
           - tar 
           - git
         state: present
-     when: ansible_os_family == "RedHat"
-
-- block: ##====Block for Debian====
-   - name: Install dependencies for Debian
-     ansible.builttin.apt:
-        name: 
-          - wget 
-          - tar 
-          - git
-        state: present
-     when: ansible_os_family == "Debian"
 
 - name: Download shadowsocks-rust archive
   get_url:
@@ -65,11 +49,26 @@
      - Reload systemd
      
 
-- name: Generate config.json
+- name: Generate config.json RedHat
   template: 
    src: config.j2 
    dest: /etc/shadowsocks/config.json 
    mode: 0555
   notify:
     - Start ssserver
-    - Open port
+    - Open port RedHat
+  when: ansible_os_family == "RedHat"
+
+- name: Generate config.json Debian
+  template: 
+   src: config.j2 
+   dest: /etc/shadowsocks/config.json 
+   mode: 0555
+  notify:
+    - Enable UFW
+    - Open port Debian
+    - Reload UFW
+    - Start ssserver   
+  when: ansible_os_family == "Debian"
+
+  
