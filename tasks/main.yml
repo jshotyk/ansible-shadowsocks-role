@@ -50,8 +50,7 @@
      
 - name: Open port RedHat
   firewalld:
-    port: "{{ port_enable }}"
-    proto: "{{ proto_enable }}"
+    port: "{{ port_enable }}/tcp"
     permanent: yes
     state: enabled
     immediate: yes
