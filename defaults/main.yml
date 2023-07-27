@@ -8,6 +8,6 @@ V2Ray_plugin: "https://github.com/shadowsocks/v2ray-plugin/releases/download/v1.
 # passwods
 shadowsoks_password: password123
 #ports
-port_enable: "80"
+shadowsocks_port_enable: "80"
 #proto
 proto_enable: "tcp"
