@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/bin/ssserver -c {{destin_folder_shadowsocks}}/config.json
+ExecStart=/bin/ssserver -c /etc/shadowsocks/config.json
 Restart=on-failure
 
 [Install]
