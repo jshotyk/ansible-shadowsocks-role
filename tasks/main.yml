@@ -22,7 +22,7 @@
 
 - name: Download V2Ray plugin
   get_url:
-    url: "{{ V2Ray_plugin }}"
+    url: "{{ v2ray_plugin }}"
     dest: "/tmp/v2ray.tar.gz"
     mode: 0644
             
