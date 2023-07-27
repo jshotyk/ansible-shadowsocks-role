@@ -10,4 +10,4 @@ shadowsoks_password: password123
 #ports
 shadowsocks_port_enable: "80"
 #proto
-proto_enable: "tcp"
+shadowsocks_proto_enable: "tcp"
