@@ -72,7 +72,7 @@
 - name: Open port Debian
   ufw:
     rule: allow
-    port: "{{ shadowsocks_port_enable }}"
+    port: "{{ shadowsocks_port_enable }}/tcp"
     notify:
     - Reload UFW
   when: ansible_os_family == "Debian"
