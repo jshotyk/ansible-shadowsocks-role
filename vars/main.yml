@@ -1,4 +1,3 @@
 ---
 # vars file for deploy_shadowsoks_rust
-# desting file 
-systemd_service_path: /etc/systemd/system
+
